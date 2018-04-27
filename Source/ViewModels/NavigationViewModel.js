@@ -101,6 +101,16 @@ define([
             }
         };
 
+        function getHeading(that) {
+            var up = that.terria.scene.camera.up;
+            console.log("x = " + up.x + ", y = " + up.y);
+            var heading = Math.atan2(up.y, up.x) - CesiumMath.PI_OVER_TWO;
+            console.log("heading = " + heading);
+            var heading2 = CesiumMath.TWO_PI - CesiumMath.zeroToTwoPi(heading);
+            console.log("heading2 = " + heading2);
+            return heading2;
+        };
+
         function widgetChange() {
             if (defined(that.terria)) {
                 if (that._unsubcribeFromPostRender) {
@@ -111,7 +121,7 @@ define([
                 that.showCompass = true && that.enableCompass;
 
                 that._unsubcribeFromPostRender = that.terria.scene.postRender.addEventListener(function() {
-                    that.heading = that.terria.scene.camera.heading;
+                    that.heading = getHeading(that);
                 });
             } else {
                 if (that._unsubcribeFromPostRender) {
@@ -120,7 +130,7 @@ define([
                 }
                 that.showCompass = false;
             }
-        }
+        };
 
         this.eventHelper.add(this.terria.afterWidgetChanged, widgetChange, this);
         //this.terria.afterWidgetChanged.addEventListener(widgetChange);

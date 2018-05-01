@@ -114,24 +114,13 @@ define([
         };
 
         function getHeading(that) {
-            var direction = Cartesian3.multiplyByScalar(that.terria.scene.camera.direction, -1, new Cartesian3());
-            console.log("direction = " + direction);
             var up = that.terria.scene.camera.up;
-            var r = Math.sqrt(Math.pow(direction.x, 2) + Math.pow(direction.y, 2));
 
-            // We want to imagine a rotated 3D-coordinate space S where direction vector lies along x-axis
-            // Now, we determine the coordinates of the up-vector in coordinate space S
-            // Create rotation matrices to do so
-            var RotMatrixZ = Matrix3.fromRotationZ(getRotationAngle(direction.x, direction.y));
-            var RotMatrixY = Matrix3.fromRotationY(Math.atan(direction.z / r));
-
-            // Rotate up vector around z-axis, then around y-axis
-            var rotatedUpAroundZ = Matrix3.multiplyByVector(RotMatrixZ, up, new Cartesian3());
-            var rotatedUp = Matrix3.multiplyByVector(RotMatrixY, rotatedUpAroundZ, new Cartesian3());
-
-            var heading = getRotationAngle(rotatedUp.z, rotatedUp.y);
-            console.log("heading = " + heading);
-            return heading;
+            var rho = Math.sqrt(Math.pow(up.x, 2) + Math.pow(up.y, 2) + Math.pow(up.z, 2));
+            var zenith = Math.acos(up.z / rho);
+            //var heading = getRotationAngle(rotatedUp.z, rotatedUp.y);
+            //console.log("heading = " + heading);
+            return zenith;
         };
 
         function widgetChange() {

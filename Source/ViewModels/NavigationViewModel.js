@@ -116,11 +116,12 @@ define([
         function getHeading(that) {
             var up = that.terria.scene.camera.up;
 
-            var rho = Math.sqrt(Math.pow(up.x, 2) + Math.pow(up.y, 2) + Math.pow(up.z, 2));
+            //            if (Math.abs(up.z) < 1) up.z = 0;
+            var rho = Cartesian3.magnitude(up);
             var zenith = Math.acos(up.z / rho);
             //var heading = getRotationAngle(rotatedUp.z, rotatedUp.y);
             //console.log("heading = " + heading);
-            return zenith;
+            return zenith - CesiumMath.PI_OVER_TWO;
         };
 
         function widgetChange() {

@@ -8,6 +8,7 @@ define([
     'Cesium/Scene/SceneMode',
     'Cesium/Core/Cartesian2',
     'Cesium/Core/Cartesian3',
+    'Cesium/Core/Matrix3',
     'Cesium/Core/Matrix4',
     'Cesium/Core/BoundingSphere',
     'Cesium/Core/HeadingPitchRange',
@@ -29,6 +30,7 @@ define([
     SceneMode,
     Cartesian2,
     Cartesian3,
+    Matrix3,
     Matrix4,
     BoundingSphere,
     HeadingPitchRange,
@@ -101,14 +103,35 @@ define([
             }
         };
 
+        function getRotationAngle(coord1, coord2) {
+            var angle = Math.atan(coord2 / coord1);
+
+            if (coord1 >= 0) {
+                return angle;
+            }
+
+            return angle + CesiumMath.PI;
+        };
+
         function getHeading(that) {
+            var direction = Cartesian3.multiplyByScalar(that.terria.scene.camera.direction, -1, new Cartesian3());
+            console.log("direction = " + direction);
             var up = that.terria.scene.camera.up;
-            console.log("x = " + up.x + ", y = " + up.y);
-            var heading = Math.atan2(up.y, up.x) - CesiumMath.PI_OVER_TWO;
+            var r = Math.sqrt(Math.pow(direction.x, 2) + Math.pow(direction.y, 2));
+
+            // We want to imagine a rotated 3D-coordinate space S where direction vector lies along x-axis
+            // Now, we determine the coordinates of the up-vector in coordinate space S
+            // Create rotation matrices to do so
+            var RotMatrixZ = Matrix3.fromRotationZ(getRotationAngle(direction.x, direction.y));
+            var RotMatrixY = Matrix3.fromRotationY(Math.atan(direction.z / r));
+
+            // Rotate up vector around z-axis, then around y-axis
+            var rotatedUpAroundZ = Matrix3.multiplyByVector(RotMatrixZ, up, new Cartesian3());
+            var rotatedUp = Matrix3.multiplyByVector(RotMatrixY, rotatedUpAroundZ, new Cartesian3());
+
+            var heading = getRotationAngle(rotatedUp.z, rotatedUp.y);
             console.log("heading = " + heading);
-            var heading2 = CesiumMath.TWO_PI - CesiumMath.zeroToTwoPi(heading);
-            console.log("heading2 = " + heading2);
-            return heading2;
+            return heading;
         };
 
         function widgetChange() {

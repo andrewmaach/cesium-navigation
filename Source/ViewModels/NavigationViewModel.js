@@ -114,19 +114,19 @@ define([
                     /*
                      * "magic" limits for pitch and roll found by trial and error
                      *
-                     * cos(2ⁿп) === 1, where n is natural number
+                     * cos(2ⁿPI) === 1, where n is natural number
                      *
-                     * default camera init is { heading: 0,  pitch: -п/2, roll: 0 }
+                     * default camera init is { heading: 0,  pitch: -PI/2, roll: 0 }
                      * where the -90 pitch causes "look down at earth"
                      *
-                     * mouse interaction rarely produces roll "far" from 2ⁿп, but
+                     * mouse interaction rarely produces roll "far" from 2ⁿPI, but
                      * cesium sets roll value that differs significantly in certain cases,
                      * when cesium seems to "split" true heading value between heading and roll.
                      */
                     var heading = that.terria.scene.camera.heading;
                     var roll = that.terria.scene.camera.roll;
-                    var near2п = CesiumMath.equalsEpsilon(Math.cos(roll), 1, CesiumMath.EPSILON1);
-                    if (that.terria.scene.camera.pitch > -1.5260713 && !near2п) {
+                    var near2PI = CesiumMath.equalsEpsilon(Math.cos(roll), 1, CesiumMath.EPSILON1);
+                    if (that.terria.scene.camera.pitch > -1.5260713 && !near2PI) {
                       that.heading = heading + roll;
                     } else {
                       that.heading = heading;

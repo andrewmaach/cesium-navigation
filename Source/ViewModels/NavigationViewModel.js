@@ -117,7 +117,7 @@ define([
                      * cos(2*n*PI) === 1, where n is natural number
                      *
                      * default camera init is { heading: 0,  pitch: -PI/2, roll: 0 }
-                     * where the -90 pitch causes "look down at earth"
+                     * where the -90 degree pitch causes "look down at earth"
                      *
                      * mouse interaction rarely produces roll "far" from 2*n*PI, but
                      * cesium sets roll value that differs significantly in certain cases,
